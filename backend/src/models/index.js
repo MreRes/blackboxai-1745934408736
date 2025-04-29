@@ -5,6 +5,8 @@ const Budget = require('./Budget');
 const FinancialGoal = require('./FinancialGoal');
 const Notification = require('./Notification');
 const RecurringTransaction = require('./RecurringTransaction');
+const Team = require('./Team');
+const TeamMember = require('./TeamMember');
 
 // User relationships
 User.hasMany(Transaction, {
@@ -57,6 +59,34 @@ RecurringTransaction.belongsTo(User, {
     as: 'user'
 });
 
+// Team relationships
+Team.belongsTo(User, {
+    foreignKey: 'ownerId',
+    as: 'owner'
+});
+User.hasMany(Team, {
+    foreignKey: 'ownerId',
+    as: 'ownedTeams'
+});
+
+Team.hasMany(TeamMember, {
+    foreignKey: 'teamId',
+    as: 'members'
+});
+TeamMember.belongsTo(Team, {
+    foreignKey: 'teamId',
+    as: 'team'
+});
+
+User.hasMany(TeamMember, {
+    foreignKey: 'userId',
+    as: 'teamMemberships'
+});
+TeamMember.belongsTo(User, {
+    foreignKey: 'userId',
+    as: 'user'
+});
+
 // RecurringTransaction relationships
 RecurringTransaction.hasMany(Transaction, {
     foreignKey: 'recurringTransactionId',
@@ -88,6 +118,9 @@ Transaction.belongsTo(FinancialGoal, {
 });
 
 // Sync all models with database
+const ChatGroup = require('./ChatGroup');
+const ChatMessage = require('./ChatMessage');
+
 const syncDatabase = async () => {
     try {
         await sequelize.sync({ alter: process.env.NODE_ENV === 'development' });
@@ -97,6 +130,34 @@ const syncDatabase = async () => {
     }
 };
 
+// Add ChatGroup and ChatMessage relationships
+ChatGroup.belongsTo(User, {
+    foreignKey: 'ownerId',
+    as: 'owner'
+});
+User.hasMany(ChatGroup, {
+    foreignKey: 'ownerId',
+    as: 'ownedChatGroups'
+});
+
+ChatGroup.hasMany(ChatMessage, {
+    foreignKey: 'groupId',
+    as: 'messages'
+});
+ChatMessage.belongsTo(ChatGroup, {
+    foreignKey: 'groupId',
+    as: 'group'
+});
+
+User.hasMany(ChatMessage, {
+    foreignKey: 'senderId',
+    as: 'sentMessages'
+});
+ChatMessage.belongsTo(User, {
+    foreignKey: 'senderId',
+    as: 'sender'
+});
+
 module.exports = {
     sequelize,
     User,
@@ -105,5 +166,9 @@ module.exports = {
     FinancialGoal,
     Notification,
     RecurringTransaction,
+    Team,
+    TeamMember,
+    ChatGroup,
+    ChatMessage,
     syncDatabase
 };
