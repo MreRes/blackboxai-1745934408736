@@ -4,6 +4,7 @@ import notificationReducer from './slices/notificationSlice';
 import transactionReducer from './slices/transactionSlice';
 import budgetReducer from './slices/budgetSlice';
 import goalReducer from './slices/goalSlice';
+import chatGroupReducer from './slices/chatGroupSlice';
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     transactions: transactionReducer,
     budgets: budgetReducer,
     goals: goalReducer,
+    chatGroups: chatGroupReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
