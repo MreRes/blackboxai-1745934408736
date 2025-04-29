@@ -1,0 +1,142 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply antialiased;
+  }
+
+  body {
+    @apply bg-gray-50 text-gray-900;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200;
+  }
+
+  .btn-primary {
+    @apply btn bg-primary-600 text-white hover:bg-primary-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  }
+
+  .btn-secondary {
+    @apply btn bg-secondary-100 text-secondary-900 hover:bg-secondary-200 focus:ring-2 focus:ring-secondary-500 focus:ring-offset-2;
+  }
+
+  .input {
+    @apply block w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-gray-700 mb-1;
+  }
+
+  .card {
+    @apply bg-white rounded-xl shadow-md p-6;
+  }
+
+  .nav-link {
+    @apply px-3 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900;
+  }
+
+  .nav-link-active {
+    @apply bg-primary-50 text-primary-700;
+  }
+}
+
+/* Calendar Styles */
+.rbc-calendar {
+  @apply font-sans;
+}
+
+.rbc-header {
+  @apply bg-gray-50 py-2 font-medium;
+}
+
+.rbc-event {
+  @apply bg-primary-600;
+}
+
+.rbc-today {
+  @apply bg-primary-50;
+}
+
+/* Form Styles */
+.form-group {
+  @apply mb-4;
+}
+
+.form-error {
+  @apply mt-1 text-sm text-red-600;
+}
+
+/* Animation Classes */
+.fade-enter {
+  @apply opacity-0;
+}
+
+.fade-enter-active {
+  @apply opacity-100 transition-opacity duration-300;
+}
+
+.fade-exit {
+  @apply opacity-100;
+}
+
+.fade-exit-active {
+  @apply opacity-0 transition-opacity duration-300;
+}
+
+/* Loading Spinner */
+.spinner {
+  @apply animate-spin h-5 w-5 text-primary-600;
+}
+
+/* Notification Styles */
+.notification {
+  @apply fixed right-4 top-4 z-50 max-w-md;
+}
+
+.notification-enter {
+  @apply transform translate-x-full opacity-0;
+}
+
+.notification-enter-active {
+  @apply transform translate-x-0 opacity-100 transition-all duration-300;
+}
+
+.notification-exit {
+  @apply transform translate-x-0 opacity-100;
+}
+
+.notification-exit-active {
+  @apply transform translate-x-full opacity-0 transition-all duration-300;
+}
+
+/* Drag and Drop Styles */
+.draggable {
+  @apply cursor-move;
+}
+
+.droppable {
+  @apply border-2 border-dashed border-gray-300 rounded-lg p-4;
+}
+
+.droppable-active {
+  @apply border-primary-500 bg-primary-50;
+}
+
+/* Scrollbar Styles */
+::-webkit-scrollbar {
+  @apply w-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 rounded-full;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full hover:bg-gray-400;
+}
