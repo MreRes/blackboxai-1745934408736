@@ -1,14 +1,18 @@
 const { NlpManager } = require('node-nlp');
 const { Transaction, User, Budget, FinancialGoal } = require('../models');
+const speech = require('@google-cloud/speech');
+const fs = require('fs');
+const path = require('path');
 
 class WhatsAppBot {
     constructor() {
-        this.nlp = new NlpManager({ languages: ['id'] });
+        this.nlp = new NlpManager({ languages: ['id', 'en'] });
+        this.speechClient = new speech.SpeechClient();
         this.initializeNLP();
     }
 
     async initializeNLP() {
-        // Add financial transaction intents
+        // Add financial transaction intents in Indonesian
         this.nlp.addDocument('id', 'catat pengeluaran {amount} untuk {category}', 'transaction.expense');
         this.nlp.addDocument('id', 'saya menghabiskan {amount} untuk {category}', 'transaction.expense');
         this.nlp.addDocument('id', 'bayar {amount} untuk {category}', 'transaction.expense');
@@ -17,27 +21,72 @@ class WhatsAppBot {
         this.nlp.addDocument('id', 'terima {amount} dari {category}', 'transaction.income');
         this.nlp.addDocument('id', 'dapat {amount} dari {category}', 'transaction.income');
 
-        // Add budget queries
+        // Add budget queries in Indonesian
         this.nlp.addDocument('id', 'berapa sisa budget {category}?', 'budget.check');
         this.nlp.addDocument('id', 'cek budget {category}', 'budget.check');
         this.nlp.addDocument('id', 'lihat budget {category}', 'budget.check');
 
-        // Add financial goal queries
+        // Add financial goal queries in Indonesian
         this.nlp.addDocument('id', 'progress target {goalName}', 'goal.check');
         this.nlp.addDocument('id', 'cek target {goalName}', 'goal.check');
         this.nlp.addDocument('id', 'berapa persen target {goalName}', 'goal.check');
 
-        // Add help commands
+        // Add help commands in Indonesian
         this.nlp.addDocument('id', 'bantuan', 'help');
         this.nlp.addDocument('id', 'cara pakai', 'help');
         this.nlp.addDocument('id', 'menu', 'help');
+
+        // Add financial transaction intents in English
+        this.nlp.addDocument('en', 'record expense {amount} for {category}', 'transaction.expense');
+        this.nlp.addDocument('en', 'I spent {amount} on {category}', 'transaction.expense');
+        this.nlp.addDocument('en', 'pay {amount} for {category}', 'transaction.expense');
+
+        this.nlp.addDocument('en', 'record income {amount} from {category}', 'transaction.income');
+        this.nlp.addDocument('en', 'received {amount} from {category}', 'transaction.income');
+        this.nlp.addDocument('en', 'got {amount} from {category}', 'transaction.income');
+
+        // Add budget queries in English
+        this.nlp.addDocument('en', 'how much budget left for {category}?', 'budget.check');
+        this.nlp.addDocument('en', 'check budget {category}', 'budget.check');
+        this.nlp.addDocument('en', 'show budget {category}', 'budget.check');
+
+        // Add financial goal queries in English
+        this.nlp.addDocument('en', 'progress of goal {goalName}', 'goal.check');
+        this.nlp.addDocument('en', 'check goal {goalName}', 'goal.check');
+        this.nlp.addDocument('en', 'what percent of goal {goalName}', 'goal.check');
+
+        // Add help commands in English
+        this.nlp.addDocument('en', 'help', 'help');
+        this.nlp.addDocument('en', 'how to use', 'help');
+        this.nlp.addDocument('en', 'menu', 'help');
 
         // Train NLP model
         await this.nlp.train();
         console.log('NLP model trained successfully');
     }
 
-    async processMessage(message, from) {
+    async transcribeAudio(audioBuffer) {
+        const audioBytes = audioBuffer.toString('base64');
+
+        const request = {
+            audio: {
+                content: audioBytes,
+            },
+            config: {
+                encoding: 'OGG_OPUS',
+                sampleRateHertz: 48000,
+                languageCode: 'id-ID',
+            },
+        };
+
+        const [response] = await this.speechClient.recognize(request);
+        const transcription = response.results
+            .map(result => result.alternatives[0].transcript)
+            .join('\n');
+        return transcription;
+    }
+
+    async processMessage(message, from, isVoice = false, audioBuffer = null) {
         try {
             // Find user by WhatsApp number
             const user = await User.findOne({
@@ -48,8 +97,18 @@ class WhatsAppBot {
                 return 'Maaf, nomor WhatsApp Anda belum terdaftar. Silakan daftar melalui website kami terlebih dahulu.';
             }
 
+            let textMessage = message;
+
+            if (isVoice && audioBuffer) {
+                textMessage = await this.transcribeAudio(audioBuffer);
+                console.log(`Transcribed voice message: ${textMessage}`);
+            }
+
+            // Detect language automatically
+            const language = this.nlp.guessLanguage(textMessage)[0]?.alpha2 || 'id';
+
             // Process message with NLP
-            const result = await this.nlp.process('id', message);
+            const result = await this.nlp.process(language, textMessage);
 
             // Handle different intents
             switch (result.intent) {
