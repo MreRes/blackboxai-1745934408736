@@ -1,0 +1,27 @@
+{
+  "name": "whatsapp-finance-bot-backend",
+  "version": "1.0.0",
+  "description": "WhatsApp Financial Management Bot Backend",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "node-nlp": "^4.27.0",
+    "pg": "^8.15.6",
+    "qrcode-terminal": "^0.12.0",
+    "sequelize": "^6.37.7",
+    "whatsapp-web.js": "^1.27.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^2.0.22"
+  }
+}
