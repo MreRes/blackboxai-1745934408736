@@ -6,6 +6,9 @@ const budgetRoutes = require('./budgetRoutes');
 const goalRoutes = require('./goalRoutes');
 const notificationRoutes = require('./notificationRoutes');
 const recurringTransactionRoutes = require('./recurringTransactionRoutes');
+const analyticsRoutes = require('./analyticsRoutes');
+const teamRoutes = require('./teamRoutes');
+const chatGroupRoutes = require('./chatGroupRoutes');
 const whatsappBot = require('../services/whatsappBot');
 const { auth } = require('../middleware/auth');
 
@@ -16,6 +19,9 @@ router.use('/budgets', budgetRoutes);
 router.use('/goals', goalRoutes);
 router.use('/notifications', notificationRoutes);
 router.use('/recurring-transactions', recurringTransactionRoutes);
+router.use('/analytics', analyticsRoutes);
+router.use('/teams', teamRoutes);
+router.use('/chat-groups', chatGroupRoutes);
 
 // WhatsApp webhook
 router.post('/webhook/whatsapp', async (req, res) => {
