@@ -16,10 +16,16 @@ class WhatsAppBot {
         this.nlp.addDocument('id', 'catat pengeluaran {amount} untuk {category}', 'transaction.expense');
         this.nlp.addDocument('id', 'saya menghabiskan {amount} untuk {category}', 'transaction.expense');
         this.nlp.addDocument('id', 'bayar {amount} untuk {category}', 'transaction.expense');
+        this.nlp.addDocument('id', 'keluarkan {amount} untuk {category}', 'transaction.expense');
+        this.nlp.addDocument('id', 'pengeluaran {amount} untuk {category}', 'transaction.expense');
+        this.nlp.addDocument('id', 'biaya {amount} untuk {category}', 'transaction.expense');
         
         this.nlp.addDocument('id', 'catat pemasukan {amount} dari {category}', 'transaction.income');
         this.nlp.addDocument('id', 'terima {amount} dari {category}', 'transaction.income');
         this.nlp.addDocument('id', 'dapat {amount} dari {category}', 'transaction.income');
+        this.nlp.addDocument('id', 'masuk {amount} dari {category}', 'transaction.income');
+        this.nlp.addDocument('id', 'pemasukan {amount} dari {category}', 'transaction.income');
+        this.nlp.addDocument('id', 'pendapatan {amount} dari {category}', 'transaction.income');
 
         // Add budget queries in Indonesian
         this.nlp.addDocument('id', 'berapa sisa budget {category}?', 'budget.check');
